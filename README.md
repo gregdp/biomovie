@@ -8,8 +8,8 @@ To Install:
 * On Windows, install to your home folder rather than to "Program Files". In the latter, the OS may not allow further modifications, i.e. adding this plugin.
 2. <a href="https://github.com/gregdp/biomovie/tree/master/download">Download</a> latest version of the BioMovie plugin.
 3. In a terminal, navigate to where the file was downloaded, then execute the following commands (replacing #_# with latest version number):
-* unzip biomovie_#_#.zip 
-* cd biomovie_#_#
+* unzip biomovie_#.#.zip 
+* cd biomovie_#.#
 * python install.py [path to Chimera]
 
 e.g.:
