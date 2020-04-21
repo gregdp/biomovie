@@ -21,7 +21,7 @@ from sys import stderr
 from time import clock
 import VolumeViewer
 import json
-
+import ttk
 
 OML = chimera.openModels.list
 
@@ -41,7 +41,7 @@ def status ( txt ) :
 
 class BioMovie ( chimera.baseDialog.ModelessDialog ) :
 
-    title = "BioMovie 1.0"
+    title = "BioMovie 0.9.1"
     name = "BioMovie"
     buttons = ( "Close" )
     help = 'https://cryoem.slac.stanford.edu/ncmi/resources/software/biomovie'
@@ -60,24 +60,26 @@ class BioMovie ( chimera.baseDialog.ModelessDialog ) :
         self.toplevel_widget = tw
         tw.withdraw()
 
-        parent.columnconfigure(0, weight = 1)
 
         row = 0
 
         menubar = Tkinter.Menu(parent, type = 'menubar', tearoff = False)
         tw.config(menu = menubar)
 
-        f = Tkinter.Frame(parent)
-        f.grid(column=0, row=row, sticky='ew')
-        l = Tkinter.Label(f, text='  ')
-        l.grid(column=0, row=row, sticky='w')
+        #f = Tkinter.Frame(parent)
+        #f.grid(column=0, row=row, sticky='ew')
+
+        #l = Tkinter.Label(f, text='  ')
+        #l.grid(column=0, row=row, sticky='w')
+
+        parent.columnconfigure(0, weight = 1)
 
 
-
-        row += 1
-        ff = Tkinter.Frame(f)
-        ff.grid(column=0, row=row, sticky='w')
         if 1 :
+            row += 1
+            ff = Tkinter.Frame(parent)
+            ff.grid(column=0, row=row, sticky='w')
+
             l = Tkinter.Label(ff, text=" ")
             l.grid(column=0, row=0, sticky='w')
 
@@ -92,86 +94,130 @@ class BioMovie ( chimera.baseDialog.ModelessDialog ) :
             l = Tkinter.Label(ff, text="  Movie Name: ")
             l.grid(column=3, row=0, sticky='w')
 
-            self.movieName = Tkinter.StringVar(f)
+            self.movieName = Tkinter.StringVar(parent)
             self.movieName.set ( "_movie_name" )
-            e = Tkinter.Entry(ff, width=20, textvariable=self.movieName)
+            e = Tkinter.Entry(ff, width=24, textvariable=self.movieName)
             e.grid(column=4, row=0, sticky='w', padx=5, pady=5)
 
             b = Tkinter.Button(ff, text="Go", command=self.Go)
             b.grid (column=5, row=0, sticky='w', padx=5)
 
 
-        row += 1
-        ff = Tkinter.Frame(f)
-        ff.grid(column=0, row=row, sticky='w')
         if 0 :
-	        l = Tkinter.Label(ff, text=" ")
-	        l.grid(column=0, row=0, sticky='w')
+            row += 1
+            ff = Tkinter.Frame(parent)
+            ff.grid(column=0, row=row, sticky='w')
 
-	        b = Tkinter.Button(ff, text="Cycle", command=self.Cycle)
-	        b.grid (column=1, row=0, sticky='w', padx=5)
-
-	        #b = Tkinter.Button(ff, text="FromInitPos", command=self.FromInitPos)
-	        #b.grid (column=2, row=0, sticky='w', padx=5)
-
-	        b = Tkinter.Button(ff, text="Threshold", command=self.CycleThr)
-	        b.grid (column=3, row=0, sticky='w', padx=5)
-
-	        b = Tkinter.Button(ff, text="Rot-X", command=self.RotateX)
-	        b.grid (column=4, row=0, sticky='w', padx=5)
-
-	        b = Tkinter.Button(ff, text="Rot-Y", command=self.RotateY)
-	        b.grid (column=5, row=0, sticky='w', padx=5)
-
-	        b = Tkinter.Button(ff, text="Rot-Z", command=self.RotateZ)
-	        b.grid (column=6, row=0, sticky='w', padx=5)
-
-	        b = Tkinter.Button(ff, text="Rock", command=self.Rock)
-	        b.grid (column=8, row=0, sticky='w', padx=5)
-
-	        #b = Tkinter.Button(ff, text="Conf", command=self.Conf)
-	        #b.grid (column=9, row=0, sticky='w', padx=5)
-
-
-        row += 1
-        ff = Tkinter.Frame(f)
-        ff.grid(column=0, row=row, sticky='w')
-        if 1 :
-
-            l = Tkinter.Label(ff, text="  Key: ")
+            l = Tkinter.Label(ff, text=" ")
             l.grid(column=0, row=0, sticky='w')
 
-            self.keyName = Tkinter.StringVar(f)
-            self.keyName.set ( "0" )
-            e = Tkinter.Entry(ff, width=7, textvariable=self.keyName)
-            e.grid(column=1, row=0, sticky='w', padx=5, pady=5)
+            b = Tkinter.Button(ff, text="Cycle", command=self.Cycle)
+            b.grid (column=1, row=0, sticky='w', padx=5)
 
-            b = Tkinter.Button(ff, text="Set", command=self.SetKey)
-            b.grid (column=2, row=0, sticky='w', padx=5)
+            #b = Tkinter.Button(ff, text="FromInitPos", command=self.FromInitPos)
+            #b.grid (column=2, row=0, sticky='w', padx=5)
 
-            b = Tkinter.Button(ff, text="Apply", command=self.ApplyKey)
+            b = Tkinter.Button(ff, text="Threshold", command=self.CycleThr)
+            b.grid (column=3, row=0, sticky='w', padx=5)
+
+            b = Tkinter.Button(ff, text="Rot-X", command=self.RotateX)
             b.grid (column=4, row=0, sticky='w', padx=5)
 
-            l = Tkinter.Label(ff, text="   ")
-            l.grid(column=5, row=0, sticky='w')
+            b = Tkinter.Button(ff, text="Rot-Y", command=self.RotateY)
+            b.grid (column=5, row=0, sticky='w', padx=5)
 
-            b = Tkinter.Button(ff, text="Load", command=self.GetKeys)
+            b = Tkinter.Button(ff, text="Rot-Z", command=self.RotateZ)
+            b.grid (column=6, row=0, sticky='w', padx=5)
+
+            b = Tkinter.Button(ff, text="Rock", command=self.Rock)
+            b.grid (column=8, row=0, sticky='w', padx=5)
+
+            #b = Tkinter.Button(ff, text="Conf", command=self.Conf)
+            #b.grid (column=9, row=0, sticky='w', padx=5)
+
+
+
+
+        if 1 :
+            row += 1
+            ff = Tkinter.Frame(parent)
+            ff.grid(column=0, row=row, sticky='news')
+
+            self.id_keyName = {}
+
+            self.tree = ttk.Treeview(ff)
+
+            #self.tree["columns"]=("one","two","three")
+            self.tree.column("#0", width=300, minwidth=100, stretch=Tkinter.YES)
+            #self.tree.column("one", width=150, minwidth=150, stretch=Tkinter.NO)
+            #self.tree.column("two", width=400, minwidth=200)
+            #self.tree.column("three", width=80, minwidth=50, stretch=Tkinter.NO)
+
+            self.tree.heading("#0",text="Views",anchor=Tkinter.W)
+            #self.tree.heading("one", text="Date modified",anchor=Tkinter.W)
+            #self.tree.heading("two", text="Type",anchor=Tkinter.W)
+            #self.tree.heading("three", text="Size",anchor=Tkinter.W)
+
+            #self.tree.pack(side=Tkinter.TOP,fill=Tkinter.X)
+            #self.tree.grid(column=0, row=0, sticky='nsew')
+            #self.tree.pack(fill=Tkinter.BOTH, expand=1)
+            #tree.place(x=0, y=0, relwidth=1, relheight=1)
+
+            self.tree.grid(row = 0, column = 0, sticky='news')
+            parent.columnconfigure(0, weight=1)
+            parent.rowconfigure(row, weight = 1)
+            ff.rowconfigure(0, weight = 1)
+            ff.columnconfigure(0, weight=1)
+
+            self.tree.bind('<<TreeviewSelect>>', self.select_mg_cb)
+            self.tree.bind('<<TreeviewOpen>>', self.open_mg_cb)
+            self.tree.bind('<<TreeviewClose>>', self.close_mg_cb)
+
+
+        if 1 :
+            row += 1
+            ff = Tkinter.Frame(parent)
+            ff.grid(column=0, row=row, sticky='w')
+
+            l = Tkinter.Label(ff, text="  View Name: ")
+            l.grid(column=0, row=0, sticky='w')
+
+            self.keyName = Tkinter.StringVar(parent)
+            self.keyName.set ( "Side" )
+            e = Tkinter.Entry(ff, width=15, textvariable=self.keyName)
+            e.grid(column=1, row=0, sticky='w', padx=5, pady=5)
+
+            b = Tkinter.Button(ff, text="Save", command=self.SetKey)
+            b.grid (column=2, row=0, sticky='w', padx=5)
+
+            #b = Tkinter.Button(ff, text="Apply", command=self.ApplyKey)
+            #b.grid (column=4, row=0, sticky='w', padx=5)
+
+            b = Tkinter.Button(ff, text="Delete", command=self.DeleteKey)
+            b.grid (column=4, row=0, sticky='w', padx=5)
+
+            #l = Tkinter.Label(ff, text="   ")
+            #l.grid(column=5, row=0, sticky='w')
+
+            b = Tkinter.Button(ff, text="Load Views", command=self.GetKeys)
             b.grid (column=6, row=0, sticky='w', padx=5)
 
             #b = Tkinter.Button(ff, text="Open", command=self.OpenFiles)
             #b.grid (column=5, row=0, sticky='w', padx=5)
 
+            # keys = views
 
 
-        row += 1
-        ff = Tkinter.Frame(f)
-        ff.grid(column=0, row=row, sticky='w')
+
         if 1 :
+            row += 1
+            ff = Tkinter.Frame(parent)
+            ff.grid(column=0, row=row, sticky='w')
 
             l = Tkinter.Label(ff, text="  Move active models farther (+) or closer (-) by: ")
             l.grid(column=0, row=0, sticky='w')
 
-            self.pushA = Tkinter.StringVar(f)
+            self.pushA = Tkinter.StringVar(parent)
             self.pushA.set ( "10" )
             e = Tkinter.Entry(ff, width=4, textvariable=self.pushA)
             e.grid(column=5, row=0, sticky='w', padx=5, pady=5)
@@ -183,10 +229,10 @@ class BioMovie ( chimera.baseDialog.ModelessDialog ) :
             b.grid (column=7, row=0, sticky='w', padx=5)
 
 
-        row += 1
-        ff = Tkinter.Frame(f)
-        ff.grid(column=0, row=row, sticky='w')
         if 1 :
+            row += 1
+            ff = Tkinter.Frame(parent)
+            ff.grid(column=0, row=row, sticky='w')
 
             #l = Tkinter.Label(ff, text="Activate: ")
             #l.grid(column=3, row=0, sticky='w')
@@ -233,14 +279,43 @@ class BioMovie ( chimera.baseDialog.ModelessDialog ) :
 
         row = row + 1
         global msg
-        msg = Tkinter.Label(parent, width = 60, anchor = 'w', justify = 'left', fg="red")
+        msg = Tkinter.Label(parent, width = 50, anchor = 'w', justify = 'left', fg="red")
         msg.grid(column=0, row=row, sticky='ew')
         self.msg = msg
         row += 1
 
-        self.ams = []
+
+        self.GetKeys()
 
 
+
+
+    def select_mg_cb (self, event):
+        print "Sel:", self.tree.selection()
+        print "Focus:", self.tree.focus()
+
+        to = self.tree.focus()
+
+
+        kname = self.id_keyName[to]
+        print kname
+
+        self.keyName.set (kname)
+        self.ApplyKey ()
+
+
+
+    def open_mg_cb (self, event):
+        #print "open"
+        #print self.tree.selection()
+        #print self.tree.focus()
+        pass
+
+    def close_mg_cb (self, event):
+        #print "close"
+        #print self.tree.selection()
+        #print self.tree.focus()
+        pass
 
 
 
@@ -249,7 +324,7 @@ class BioMovie ( chimera.baseDialog.ModelessDialog ) :
         print "Go - "
 
         if self.scriptFun == None :
-            umsg ("No script set - run execfile ([path to script]) in IDLE first")
+            umsg ("No script set - run 'execfile ([path to script])' in IDLE first")
 
         else :
             self.scriptFun()
@@ -300,6 +375,28 @@ class BioMovie ( chimera.baseDialog.ModelessDialog ) :
         if am == None :
             print "WARNING: asked for model with name %s, which was not found; returning a None object..." % mname
         return am
+
+
+    def GetMod (self, mname) :
+
+        am = None
+        for mod in chimera.openModels.list () :
+            if mod.name == mname :
+                if am != None :
+                    print "WARNING: two models with same name found."
+                    return None
+                om = AnimatableModel ()
+                om.FromMod ( mod )
+
+                if type(mod) == VolumeViewer.volume.Volume :
+                    am = om.FromMap()
+                elif type(mod) == chimera.Molecule :
+                    am = om.FromMol()
+
+        if am == None :
+            print "ERROR: asked for model with name %s, which was not found (i.e. is not an open model); returning a None object... This will likely cause an exception!" % mname
+        return am
+
 
 
     def GetVisMods (self) :
@@ -603,98 +700,149 @@ class BioMovie ( chimera.baseDialog.ModelessDialog ) :
 
 
 
+    def SetKey ( self ) :
 
+        K = self.keyName.get()
+        umsg ("Setting: " + self.keyName.get())
+
+        if not hasattr ( self, "akeys" ) :
+            self.akeys = {}
+
+        self.akeys[K] = {}
+
+        for mod in chimera.openModels.list() :
+            xf = mod.openState.xform
+            self.akeys[K][mod.name] = Matrix.xform_matrix ( xf )
+            #mod.kxf[K] = Matrix.xform_matrix ( xf )
+
+        self.UpdateModKeys()
+
+        self.WriteKeys()
+
+
+    def KeysPath ( self ) :
+
+        kpath = None
+
+        # look for open maps first, get their folder
+        for m in chimera.openModels.list() :
+            if type(m) == VolumeViewer.volume.Volume :
+                mdir, mpfile = os.path.split(m.data.path)
+                kpath = os.path.join ( mdir, "_views.txt" )
+                break
+
+        if kpath != None :
+            return kpath
+
+        # otherwise try open models
+        for m in chimera.openModels.list() :
+            if type(m) == chimera.Molecule :
+                if hasattr ( m, 'openedAs' ) :
+                    path, molname = os.path.split ( m.openedAs[0] )
+                    kpath = os.path.join ( path, "_views.txt" )
+                    break
+
+        return kpath
+
+
+
+    def WriteKeys ( self ) :
+
+        kpath = self.KeysPath()
+        if kpath == None :
+            return
+
+        try :
+            with open(kpath, 'w') as outfile:
+                json.dump(self.akeys, outfile)
+        except :
+            #umsg ( "did not save _keys.txt file" )
+            print " - did not save _views.txt file"
+            return
+        print ( "_views.txt saved: " + kpath )
 
 
 
     def GetKeys ( self ) :
 
-        dm = chimera.openModels.list()[0]
-        #print dm.name, dm.data.path
-
-        mdir, mpfile = os.path.split(dm.data.path)
-        #print " - ", mdir
-        #print " - ", mpfile
-
-        fout = mdir + "/anim.txt"
-        print " -> ", fout
+        kpath = self.KeysPath()
+        if kpath == None :
+            return
 
         self.akeys = {}
         try :
-            fin = open(fout, 'r')
+            fin = open(kpath, 'r')
             self.akeys = json.load(fin)
         except :
             print "no keys"
             #print data
 
-        print "Keys:"
-        print self.akeys.keys()
+        self.UpdateModKeys ()
 
-        for K, mks in self.akeys.iteritems() :
-            for mod in chimera.openModels.list() :
-                if mod.name in mks :
-                    #print " - ", K, mod.name
-                    if not hasattr ( mod, 'kxf' ) :
-                        mod.kxf = {}
-                    mod.kxf[K] = mks[mod.name]
-                else :
-                    #print " -x- ", K, mod.name
-                    pass
+        print ( "_views.txt loaded: " + kpath )
 
 
 
-    def SetKey ( self ) :
+    def UpdateModKeys ( self ) :
 
-        dm = chimera.openModels.list()[0]
-        #print dm.name, dm.data.path
-
-        mdir, mpfile = os.path.split(dm.data.path)
-        #print " - ", mdir
-        #print " - ", mpfile
-
-        fout = mdir + "/anim.txt"
-        print " -> ", fout
-
-        try :
-            fin = open(fout, 'r')
-            data = json.load(fin)
-        except :
-            pass
-            #print data
-
-        self.GetKeys ()
-
-        K = self.keyName.get()
-        print " - setting key: ", self.keyName.get()
-
-        #xf0 = dm.openState.xform
-
-        mks = {}
-        for mod in chimera.openModels.list() :
-            xf = mod.openState.xform
-            #xf.premultiply ( xf0 )
-            mks[mod.name] = Matrix.xform_matrix ( xf )
-            if not hasattr (mod, 'kxf') :
-                mod.kxf = {}
-            mod.kxf[K] = xf
-
+        self.tree.delete(*self.tree.get_children())
+        self.id_keyName = {}
 
         if not hasattr ( self, "akeys" ) :
             self.akeys = {}
-        self.akeys[K] = mks
+            return
+
+        knames = self.akeys.keys()
+        knames.sort()
+
+        for kname in knames :
+            kid = self.tree.insert("", "end", "", text=kname)
+            self.id_keyName[kid] = kname
+
+        for mod in chimera.openModels.list() :
+            mod.kxf = {}
+            for kname in self.akeys.keys() :
+                if mod.name in self.akeys[kname] :
+                    mod.kxf[kname] = self.akeys[kname][mod.name]
+                else :
+                    if len(self.akeys[kname]) > 0 :
+                        mn = self.akeys[kname].keys()[0]
+                        mod.kxf[kname] = self.akeys[kname][mn]
 
 
-        with open(fout, 'w') as outfile:
-            json.dump(self.akeys, outfile)
+    def DeleteKey ( self ) :
+
+        fout = self.KeysPath()
+        if fout == None :
+            umsg ( "Open a map/model before setting a key..." )
+            return
 
 
-        self.GetKeys()
+        to = self.tree.focus()
+
+        if len(to) == 0 :
+            umsg ( 'No view selected' )
+            return
+
+        K = self.id_keyName[to]
+        umsg ( "Deleting: " + K )
+
+        if not hasattr ( self, "akeys" ) :
+            self.akeys = {}
+            return
+
+        if K in self.akeys :
+            del self.akeys[K]
+
+        self.UpdateModKeys ()
+        self.WriteKeys()
+
+
 
 
 
     def ApplyKey ( self ) :
 
-        self.GetKeys ()
 
         K = self.keyName.get()
         print " - applying key: ", self.keyName.get()
@@ -706,15 +854,103 @@ class BioMovie ( chimera.baseDialog.ModelessDialog ) :
                     print " - ", mod.name, "has no keys?"
                 else :
                     if K in mod.kxf :
-                        mod.openState.xform = Matrix.chimera_xform ( mod.kxf[K] )
+                        mod.xf0 = chimera.Xform(mod.openState.xform)
+                        mod.xf1 = Matrix.chimera_xform ( mod.kxf[K] )
+                        #mod.openState.xform = Matrix.chimera_xform ( mod.kxf[K] )
                     else :
                         #print " - ", mod.name, " doesn't have key", K
                         pass
 
 
         else :
-            umsg ( "key " + K + " not found" )
+            umsg ( "view " + K + " not found" )
 
+        self.InterpToKey ()
+
+
+
+    def InterpToKey ( self ) :
+
+
+        for mod in chimera.openModels.list() :
+
+            if " -surface.for.chain- " in mod.name :
+                continue
+
+            if not hasattr ( mod, "COM" ) :
+                if type(mod) == chimera.Molecule :
+                    sel = chimera.selection.OSLSelection ( "#%d" % mod.id )
+                    atoms = sel.atoms()
+                    from _multiscale import get_atom_coordinates
+                    points = get_atom_coordinates ( atoms, transformed = False )
+                    mod.COM, mod.U, mod.S, mod.V = prAxes ( points )
+                    mod.comp = chimera.Point ( mod.COM[0], mod.COM[1], mod.COM[2] )
+                    print " %s (map) -- " % mod.name, mod.comp
+                elif type(mod) == VolumeViewer.volume.Volume :
+                    pts, weights = map_points ( mod )
+                    if len(pts) == 0 :
+                        pts, weights = map_points ( mod, False )
+                    mod.COM, mod.U, mod.S, mod.V = prAxes ( pts )
+                    mod.comp = chimera.Point ( mod.COM[0], mod.COM[1], mod.COM[2] )
+                    print " %s (mol) -- " % mod.name, mod.comp
+
+            mod.fromPos = mod.xf0.apply ( mod.comp )
+            mod.toPos = mod.xf1.apply ( mod.comp )
+            mod.tvec = mod.toPos - mod.fromPos
+
+
+        from quaternion import Quaternion, slerp
+
+        #from chimera import tasks, CancelOperation
+        #task = tasks.Task("Going to '%s' View 1/20" % self.keyName.get(), modal = True)
+
+        #try :
+        N = 20
+        for i in range ( N ) :
+            f = i / float(N-1)
+            #f1 = 1.0 - f0
+            f1, f2 = 2.0*f*f*f-3.0*f*f+1.0, 3*f*f-2*f*f*f
+
+            for mod in chimera.openModels.list() :
+
+                if " -surface.for.chain- " in mod.name :
+                    continue
+
+                t0 = mod.xf0.getTranslation ()
+                q0 = Quaternion ()
+                q0.fromXform ( mod.xf0 )
+                #q0i = q0.inverse ()
+
+                t1 = mod.xf1.getTranslation ()
+                q1 = Quaternion ()
+                q1.fromXform ( mod.xf1 )
+
+                Q = slerp ( q0, q1, f2 )
+                Q.normalize()
+
+                xf = chimera.Xform.translation ( mod.fromPos.toVector() + mod.tvec * f2 )
+                xf.multiply ( Q.Xform () )
+                xf.multiply ( chimera.Xform.translation ( mod.comp.toVector() * -1.0 ) )
+
+                mod.openState.xform = xf
+
+                if hasattr (mod, 'surfMods') :
+                    for cid, m in mod.surfMods.iteritems() :
+                        m.openState.xform = xf
+
+            print ".",
+            #task.updateStatus( "Going to '%s' View %d/%d" % (self.keyName.get(),i+1,N) )
+            chimera.viewer.postRedisplay()
+            self.toplevel_widget.update_idletasks ()
+
+        #except CancelOperation:
+        #    print "Going to view canceled"
+
+        #finally:
+        #    print "Going to view done"
+        #    task.finished()
+
+        print ""
 
 
 
@@ -738,7 +974,7 @@ class BioMovie ( chimera.baseDialog.ModelessDialog ) :
             print "no keys"
             #print data
 
-        print "Keys:"
+        print "Views:"
         print self.akeys.keys()
 
         k0 = self.akeys['0']
@@ -899,10 +1135,11 @@ class BioMovie ( chimera.baseDialog.ModelessDialog ) :
         import os
         if not os.path.isdir (self.framesPath) :
             try :
-                print " - making folder: ", self.framesPath
+                print "Making folder for frames:"
+                print " - ", self.framesPath
                 os.mkdir ( self.framesPath )
             except :
-                umsg ("Could not make folder for frames... aborting")
+                umsg ("Could not make folder for frames... stopping. Please specify folder in your movie script using the framesPath variable.")
                 self.stopMovie.set(True)
                 return
 
@@ -1015,6 +1252,7 @@ class Frames(object) :
         self.start = startStep
         self.end = endStep
         #print "   - frames - %d|%d" % (self.start, self.end)
+        AddAction (self)
 
     def step ( self, stepAt ) :
 
@@ -1033,11 +1271,11 @@ class Frames(object) :
 class VaryThr (Frames) :
 
     def __init__ (self, startStep, endStep, animMod, startThr, endThr) :
+        #print " - vary thr - %s - %.3f|%.3f" % (animMod.mod.name, self.startThr, self.endThr)
+        super(VaryThr, self).__init__(startStep, endStep)
         self.animMod = animMod
         self.startThr = startThr
         self.endThr = endThr
-        #print " - vary thr - %s - %.3f|%.3f" % (animMod.mod.name, self.startThr, self.endThr)
-        super(VaryThr, self).__init__(startStep, endStep)
 
 
     def step (self, stepAt) :
@@ -1062,11 +1300,11 @@ class VaryThr (Frames) :
 class VaryAlpha (Frames) :
 
     def __init__ (self, startStep, endStep, animMod, startA, endA) :
+        #print " - vary A - %s - %.3f|%.3f" % (animMod.mod.name, self.startA, self.endA)
+        super(VaryAlpha, self).__init__(startStep, endStep)
         self.animMod = animMod
         self.startA = startA
         self.endA = endA
-        #print " - vary A - %s - %.3f|%.3f" % (animMod.mod.name, self.startA, self.endA)
-        super(VaryAlpha, self).__init__(startStep, endStep)
 
 
     def step (self, stepAt) :
@@ -1091,6 +1329,7 @@ class VaryAlpha (Frames) :
 class SetColor (Frames) :
 
     def __init__ (self, atStep, animMod, clr) :
+        super(SetColor, self).__init__(atStep, atStep)
         self.start = self.end = atStep
         self.animMod = animMod
         self.toColor = clr
@@ -1151,11 +1390,11 @@ class SetColor (Frames) :
 class VaryColor (Frames) :
 
     def __init__ (self, startStep, endStep, animMod, startC, endC) :
+        #print " - vary A - %s - %.3f|%.3f" % (animMod.mod.name, self.startA, self.endA)
+        super(VaryColor, self).__init__(startStep, endStep)
         self.animMod = animMod
         self.startC = numpy.array ( startC )
         self.endC = numpy.array ( endC )
-        #print " - vary A - %s - %.3f|%.3f" % (animMod.mod.name, self.startA, self.endA)
-        super(VaryColor, self).__init__(startStep, endStep)
 
 
     def step (self, stepAt) :
@@ -1194,8 +1433,8 @@ class VaryColor (Frames) :
                 #for r in self.animMod.mod.residues :
                 #    r.ribbonColor = chimera.MaterialColor ( C[0], C[1], C[2], C[3] )
 
-                if hasattr (amod, 'surfMods') :
-                    for cid, mod in amod.surfMods.iteritems() :
+                if hasattr (amod.mod, 'surfMods') :
+                    for cid, mod in amod.mod.surfMods.iteritems() :
                         #mod.openState.xform = xf_to_pos
                         TODO
                         self.alphaAt = color[3]
@@ -1211,6 +1450,7 @@ class VaryColor (Frames) :
 class SetColorRes (Frames) :
 
     def __init__ (self, atStep, selStr, cmap) :
+        super(SetColorRes, self).__init__(atStep, atStep)
         self.start = self.end = atStep
         self.selStr = selStr
         self.cmap = cmap
@@ -1239,6 +1479,7 @@ class SetColorRes (Frames) :
 class SetDisp (Frames) :
 
     def __init__ (self, atStep, animMod, dmode) :
+        super(SetDisp, self).__init__(atStep, atStep)
         self.start = self.end = atStep
         self.animMod = animMod
         self.toDispMode = dmode
@@ -1295,6 +1536,7 @@ class SetDisp (Frames) :
 class SetAlpha (Frames) :
 
     def __init__ (self, atStep, animMod, alpha) :
+        super(SetAlpha, self).__init__(atStep, atStep)
         self.start = self.end = atStep
         self.animMod = animMod
         self.toAlpha = alpha
@@ -1325,6 +1567,7 @@ class SetAlpha (Frames) :
 class SetThr (Frames) :
 
     def __init__ (self, atStep, animMod, thr) :
+        super(SetThr, self).__init__(atStep, atStep)
         self.start = self.end = atStep
         self.animMod = animMod
         self.toThr = thr
@@ -1350,9 +1593,10 @@ class SetThr (Frames) :
 
 
 
-class Hide :
+class Hide (Frames) :
 
     def __init__ (self, atStep, animMod) :
+        super(Hide, self).__init__(atStep, atStep)
         self.animMod = animMod
         self.start = self.end = atStep
         self.triggered = False
@@ -1360,6 +1604,7 @@ class Hide :
         #    print " - hide - LIST - %.3f" % (self.start)
         #else :
         #    print " - hide - %s - %.3f" % (animMod.mod.name, self.start)
+
 
 
     def step (self, stepAt) :
@@ -1388,9 +1633,10 @@ class Hide :
                 del om.mod.morphMod
 
 
-class Show :
+class Show (Frames) :
 
     def __init__ (self, atStep, animMod) :
+        super(Show, self).__init__(atStep, atStep)
         self.animMod = animMod
         self.start = self.end = atStep
         self.triggered = False
@@ -1474,17 +1720,13 @@ class ColorContacts :
 # - each model moves about its own center of mass, so they can appear disjoint
 # - this is good for 'exploding' views
 
-class XfInterpKm (Frames) :
+class ToView (Frames) :
 
-    def __init__ ( self, startStep, endStep, animMods, fromKey, toKey, atype="linear" ) :
+    def __init__ ( self, startStep, endStep, animMods, toKey, atype="cubic" ) :
 
         #print " - xf interp - %s" % (animMod.mod.name)
-        super(XfInterpKm, self).__init__(startStep, endStep)
+        super(ToView, self).__init__(startStep, endStep)
 
-        #self.startMod = start
-        #self.endMod = end
-        #self.animMod = animMod
-        self.fromKey = fromKey
         self.toKey = toKey
         self.amods = animMods
         self.atype = atype
@@ -1500,9 +1742,6 @@ class XfInterpKm (Frames) :
             for amod in self.amods :
 
                 xf0 = amod.mod.openState.xform
-                if self.fromKey != None :
-                    xf0 = Matrix.chimera_xform ( amod.mod.kxf[self.fromKey] )
-
                 xf1 = Matrix.chimera_xform ( amod.mod.kxf[self.toKey] )
 
                 endCOM_LC = chimera.Point ( amod.COM[0], amod.COM[1], amod.COM[2] )
@@ -1520,7 +1759,7 @@ class XfInterpKm (Frames) :
 
 
         #super(Frames, self).step(stepAt)
-        super(XfInterpKm, self).step(stepAt)
+        super(ToView, self).step(stepAt)
 
         f = self.f
         # linear interpolation
@@ -1552,6 +1791,9 @@ class XfInterpKm (Frames) :
 
             amod.mod.openState.xform = xf_to_pos
 
+            if hasattr (amod.mod, 'surfMods') :
+                for cid, mod in amod.mod.surfMods.iteritems() :
+                    mod.openState.xform = xf_to_pos
 
 
 # Interpolate models from one xform to another
@@ -1651,8 +1893,8 @@ class XfInterpKs (Frames) :
         for amod in self.amods :
             amod.mod.openState.xform = xf_to_pos
 
-            if hasattr (amod, 'surfMods') :
-                for cid, mod in amod.surfMods.iteritems() :
+            if hasattr (amod.mod, 'surfMods') :
+                for cid, mod in amod.mod.surfMods.iteritems() :
                     mod.openState.xform = xf_to_pos
 
 
@@ -1660,18 +1902,13 @@ class XfInterpKs (Frames) :
 
 
 
-class XfSetK (Frames) :
+class SetView (Frames) :
 
-    def __init__ ( self, startStep, animMod, toKey ) :
-
+    def __init__ ( self, startStep, animMods, toKey ) :
         #print " - xf interp - %s" % (animMod.mod.name)
-        super(XfSetK, self).__init__(startStep, startStep)
-
-        #self.startMod = start
-        #self.endMod = end
-        self.animMod = animMod
+        super(SetView, self).__init__(startStep, startStep)
         self.toKey = toKey
-        self.amods = [animMod]
+        self.amods = animMods
 
 
     def step ( self, stepAt ) :
@@ -1680,8 +1917,16 @@ class XfSetK (Frames) :
             return
 
         if stepAt == self.start :
-            xf1 = Matrix.chimera_xform ( self.animMod.mod.kxf[self.toKey] )
-            self.animMod.mod.openState.xform = xf1
+
+            for amod in self.amods :
+
+                if not hasattr ( amod.mod, 'kxf' ) :
+                    print "SetView: %s doesn't have views set" % amod.mod.name
+                elif not self.toKey in amod.mod.kxf :
+                    print "SetView: %s doesn't have view %s" % (amod.mod.name, self.toKey)
+                else :
+                    xf1 = Matrix.chimera_xform ( amod.mod.kxf[self.toKey] )
+                    amod.mod.openState.xform = xf1
 
 
 
@@ -1712,15 +1957,13 @@ class SetXf (Frames) :
 class ModInterp (Frames) :
 
     def __init__ ( self, startStep, endStep, mod, mod0, mod1 ) :
-
         #print " - xf interp - %s" % (animMod.mod.name)
         super(ModInterp, self).__init__(startStep, endStep)
-
-        #self.startMod = start
-        #self.endMod = end
         self.mod = mod
         self.mod0 = mod0
         self.mod1 = mod1
+
+
 
 
     def getResMap ( self, mol ) :
@@ -2214,8 +2457,8 @@ class Rotate (Frames) :
 
             amod.mod.openState.xform = xf
 
-            if hasattr (amod, 'surfMods') :
-                for cid, mod in amod.surfMods.iteritems() :
+            if hasattr (amod.mod, 'surfMods') :
+                for cid, mod in amod.mod.surfMods.iteritems() :
                     mod.openState.xform = xf
 
 
@@ -2286,16 +2529,21 @@ class Rock (Frames) :
 
             amod.mod.openState.xform = xf_to_pos
 
+            if hasattr (amod.mod, 'surfMods') :
+                for cid, mod in amod.mod.surfMods.iteritems() :
+                    mod.openState.xform = xf_to_pos
+
+
 
 
 class RockAts (Frames) :
 
     def __init__ ( self, startStep, endStep, animMods, comMod, selStr, axis, totDeg, numCycles, itype="cubic" ) :
-        print " - rock Ats"
-        print "   axis: ", axis
-        print "   totDeg: ", totDeg
-        print "   numCyc: ", numCycles
         super(RockAts, self).__init__(startStep, endStep)
+        #print " - rock Ats"
+        #print "   axis: ", axis
+        #print "   totDeg: ", totDeg
+        #print "   numCyc: ", numCycles
 
         self.animMods = animMods
         self.totDeg = float ( totDeg )
@@ -2322,7 +2570,7 @@ class RockAts (Frames) :
             COM, U, S, V = prAxes ( points )
             comp = chimera.Point ( COM[0], COM[1], COM[2] )
 
-            print " - rock Ats - first step - %s, " % self.selStr, COM
+            #print " - rock Ats - first step - %s, " % self.selStr, COM
 
             self.comwc = comp # self.comMod.mod.openState.xform.apply ( comp )
             for amod in self.animMods :
@@ -2360,8 +2608,8 @@ class RockAts (Frames) :
 
             amod.mod.openState.xform = xf_to_pos
 
-            if hasattr (amod, 'surfMods') :
-                for cid, mod in amod.surfMods.iteritems() :
+            if hasattr (amod.mod, 'surfMods') :
+                for cid, mod in amod.mod.surfMods.iteritems() :
                     mod.openState.xform = xf_to_pos
 
 
@@ -2603,6 +2851,16 @@ class VolMorph (Frames) :
             del self.endM.mod.morphMod
 
 
+# the active movie as global to avoid passing this around
+bioMovieActiveMovie = None
+
+def AddAction (action) :
+    global bioMovieActiveMovie
+    if bioMovieActiveMovie == None :
+        print "No movie created, hence action was not added to any movie"
+        print " - create a movie first, e.g. movie = biomovie.Movie(biomovie_dialog) "
+    else :
+        bioMovieActiveMovie.add ( action )
 
 
 class Movie :
@@ -2614,6 +2872,9 @@ class Movie :
         self.end = 0
         self.dlg = dlg
         self.keys = {}
+
+        global bioMovieActiveMovie
+        bioMovieActiveMovie = self
 
 
     def add ( self, anim ) :
@@ -2798,20 +3059,26 @@ class AnimatableModel :
 
         self.mod.display = True
 
-        if hasattr (self, 'surfMods') :
+        if hasattr (self.mod, 'surfMods') :
             #self.mod.display = False
             self.mod.display = True
-            for cid, mod in self.surfMods.iteritems() :
-                self.surfMods[cid].display = True
+            for cid, mod in self.mod.surfMods.iteritems() :
+                try :
+                    self.mod.surfMods[cid].display = True
+                except :
+                    pass
 
 
     def Hide ( self ) :
 
         self.mod.display = False
 
-        if hasattr (self, 'surfMods') :
-            for cid, mod in self.surfMods.iteritems() :
-                self.surfMods[cid].display = False
+        if hasattr (self.mod, 'surfMods') :
+            for cid, mod in self.mod.surfMods.iteritems() :
+                try :
+                    self.mod.surfMods[cid].display = False
+                except :
+                    pass
 
 
 
@@ -2917,12 +3184,12 @@ class AnimatableModel :
                         sp.vertexColors = vcolors
 
         elif type(self.mod) == chimera.Molecule :
-            if hasattr (self, 'surfMods') :
+            if hasattr (self.mod, 'surfMods') :
                 #print " - set a: ", self.mod.name, a
-                for cid, mod in self.surfMods.iteritems() :
+                for cid, mod in self.mod.surfMods.iteritems() :
                     #chimera.openModels.close ( [mod] )
                     color = self.colors[cid]
-                    self.SetModSurfColor ( self.surfMods[cid], (color[0], color[1], color[2], a) )
+                    self.SetModSurfColor ( self.mod.surfMods[cid], (color[0], color[1], color[2], a) )
                     self.alphaAt = a
                     #print cid,
                 #print ""
@@ -2986,29 +3253,29 @@ class AnimatableModel :
 
             if self.dispMode[0] == "ribbon" :
 
-                self.mod.display = True
+                #self.mod.display = True
 
-                if hasattr (self, 'surfMods') :
-                    for cid, mod in self.surfMods.iteritems() :
-                        chimera.openModels.close ( [mod] )
+                if hasattr (self.mod, 'surfMods') :
+                    for cid, smod in self.mod.surfMods.iteritems() :
+                        chimera.openModels.close ( [smod] )
 
-                self.surfMods = {}
+                self.mod.surfMods = {}
 
             elif self.dispMode[0] == "surf" :
 
                 #self.mod.display = False
-                self.mod.display = True
+                #self.mod.display = True
 
-                if hasattr (self, 'surfMods') :
-                    for cid, mod in self.surfMods.iteritems() :
-                        chimera.openModels.close ( [mod] )
+                if hasattr (self.mod, 'surfMods') :
+                    for cid, smod in self.mod.surfMods.iteritems() :
+                        chimera.openModels.close ( [smod] )
 
-                self.surfMods = {}
+                self.mod.surfMods = {}
 
                 if hasattr(self, 'colors') :
                     for cid, color in self.colors.iteritems() :
 
-                        modName = self.mod.name + " -- " + cid
+                        modName = self.mod.name + " -surface.for.chain- " + cid
                         closeMods = []
                         for m in chimera.openModels.list() :
                             if m.name == modName :
@@ -3018,12 +3285,12 @@ class AnimatableModel :
                             chimera.openModels.close ( closeMods )
 
                         res, step, thr = self.dispMode[1], self.dispMode[2], self.dispMode[3]
-                        self.surfMods[cid] = self.GenStrucMap ( cid, step, res )
-                        self.surfMods[cid].name = modName
-                        self.SetModThr ( self.surfMods[cid], thr )
+                        self.mod.surfMods[cid] = self.GenStrucMap ( cid, step, res )
+                        self.mod.surfMods[cid].name = modName
+                        self.SetModThr ( self.mod.surfMods[cid], thr )
                         self.alphaAt = color[3]
-                        self.SetModSurfColor ( self.surfMods[cid], (color[0], color[1], color[2], self.alphaAt) )
-                        #print " %d" % len(self.surfMods[cid].surfacePieces),
+                        self.SetModSurfColor ( self.mod.surfMods[cid], (color[0], color[1], color[2], self.alphaAt) )
+                        #print " %d" % len(self.mod.surfMods[cid].surfacePieces),
                     #print "."
 
 
