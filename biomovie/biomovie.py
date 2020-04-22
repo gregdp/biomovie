@@ -41,7 +41,7 @@ def status ( txt ) :
 
 class BioMovie ( chimera.baseDialog.ModelessDialog ) :
 
-    title = "BioMovie 0.9.1"
+    title = "BioMovie 0.9.2"
     name = "BioMovie"
     buttons = ( "Close" )
     help = 'https://cryoem.slac.stanford.edu/ncmi/resources/software/biomovie'
@@ -53,6 +53,7 @@ class BioMovie ( chimera.baseDialog.ModelessDialog ) :
         self.framesPath = "/Users/greg/dev/mol/chimera/frames/"
         self.ffmpegPath = None
         self.scriptFun = None
+        self.movieFormat = ".mov"
 
 
 
@@ -1182,14 +1183,19 @@ class BioMovie ( chimera.baseDialog.ModelessDialog ) :
 
         from os.path import join, split
         framesPath = join( self.framesPath, "%06d.png" )
-        moviePath = join ( split(self.framesPath)[0], name + ".mov" )
+        moviePath = join ( split(self.framesPath)[0], name + self.movieFormat )
 
         print " - frames from:", framesPath
         print " - movie file:", moviePath
 
-        args = [ self.ffmpegPath, "-r", "30", "-i", framesPath, "-y",
-            "-qscale", "1", "-b", "9000", "-vcodec", "mpeg4",
-            "-f", "mov", moviePath ]
+        if self.movieFormat == ".mov" :
+            args = [ self.ffmpegPath, "-r", "30", "-i", framesPath, "-y",
+                "-qscale", "1", "-b", "9000", "-vcodec", "mpeg4",
+                "-f", "mov", moviePath ]
+        else :
+            args = [ self.ffmpegPath, "-r", "30", "-i", framesPath, "-y",
+                "-qscale", "1", "-b", "9000", "-vcodec", "mpeg4",
+                "-f", "mp4", moviePath ]
 
         #    "-f", "mp4", self.framesPath + "_"+name+".mp4" ]
 
@@ -1209,13 +1215,16 @@ def FindFFmpeg () :
     # backtrack through path to chimera script to find executable
     print "finding ffmpeg exec:"
     import sys
-    atPath = os.path.split ( sys.argv[0] )[0]
+    atPath = sys.argv[0]
     chiPath = None
+
+    #print " - start ", atPath
+
     for i in range (100) :
 
         # go back along the path, look for the ffmpeg binary
         atPath = os.path.split ( atPath )[0]
-        print " --- at %s" % atPath
+        #print " --- at %s" % atPath
 
         # mac
         from os.path import join as J
@@ -1225,13 +1234,23 @@ def FindFFmpeg () :
             chiPath = tryPath
             break
 
-        #unix
+        # unix
         tryPath = J(J(atPath,'bin'),'ffmpeg')
         if os.path.isfile(tryPath) :
             print " - found ffmpeg path: %s" % tryPath
             chiPath = tryPath
             break
 
+        # Windows
+        tryPath = J(J(atPath,'bin'),'ffmpeg.exe')
+        if os.path.isfile(tryPath) :
+            print " - found ffmpeg path: %s" % tryPath
+            chiPath = tryPath
+            break
+
+
+        if len(atPath) == 0 :
+            break
 
     return chiPath
 

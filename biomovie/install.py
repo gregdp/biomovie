@@ -63,10 +63,9 @@ if didInstall :
     print "Installation complete."
     print ""
     print "To use:"
-    print " 1. Please restart Chimera."
+    print " 1. Start or restart Chimera."
     print " 2. Select Tools -> Utilities -> BioMovie"
-    print ' 3. Please note that on Mac OS, you may see the message "Chimera is damaged and cannot be opened." Please see the following link for the solution: https://www.santoshsrinivas.com/disable-gatekeeper-in-macos-sierra/'
-    print ' 4. More info: https://cryoem.slac.stanford.edu/ncmi/resources/software/BioMovie'
+    print ' 3. More info: https://cryoem.slac.stanford.edu/ncmi/resources/software/BioMovie'
     print ""
 
     #wh = os.path.join ( os.getcwd(), "install.html" )
